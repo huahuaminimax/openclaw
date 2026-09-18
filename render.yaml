@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: openclaw
+    runtime: docker
+    plan: free
+    # Render's default web port is 10000; the gateway must listen there.
+    # No healthCheckPath: the free tier's HTTP health check trips the gateway's
+    # proxy-shaped traffic rejection; default TCP probing on port 10000 avoids it.
+    dockerCommand: node openclaw.mjs gateway --allow-unconfigured --bind lan
+    envVars:
+      - key: OPENCLAW_GATEWAY_PORT
+        value: "10000"
+      - key: OPENCLAW_STATE_DIR
+        value: /home/node/.openclaw
+      - key: OPENCLAW_WORKSPACE_DIR
+        value: /home/node/.openclaw/workspace
+      - key: OPENCLAW_CONFIG_PATH
+        value: /app/docs/openclaw.json
+      - key: OPENCLAW_GATEWAY_TOKEN
+        generateValue: true
